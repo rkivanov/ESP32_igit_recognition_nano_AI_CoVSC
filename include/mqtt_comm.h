@@ -1,4 +1,5 @@
 #pragma once
+#include <Arduino.h>
 void mqtt_setup();
 void mqtt_loop();
 void mqtt_publish_digit(const uint8_t* data, size_t len);

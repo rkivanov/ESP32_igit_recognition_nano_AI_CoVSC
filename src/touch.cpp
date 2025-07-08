@@ -17,4 +17,5 @@ void touch_init() {
     ts.setRotation(1);
     pinMode(TOUCH_IRQ, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(TOUCH_IRQ), touch_isr, FALLING);
+    Serial.println("Touchscreen initialized successfully");
 }

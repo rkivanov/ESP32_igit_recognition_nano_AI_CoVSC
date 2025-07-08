@@ -7,6 +7,7 @@ void display_init() {
     tft.init();
     tft.setRotation(1);
     tft.fillScreen(TFT_BLACK);
+    Serial.println("Display initialized successfully");
 }
 
 void display_show_digit(int digit) {

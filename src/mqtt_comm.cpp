@@ -10,7 +10,7 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
 }
 
 void mqtt_setup() {
-    client.setServer("JETSON_NANO_IP", 1883);
+    client.setServer("192.168.1.20", 1883);
     client.setCallback(mqtt_callback);
     while (!client.connected()) {
         client.connect("ESP32Client");

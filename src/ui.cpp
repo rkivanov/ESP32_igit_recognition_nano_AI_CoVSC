@@ -5,6 +5,7 @@
 
 void ui_init() {
     // Draw UI: draw area, buttons, labels
+    Serial.println("UI initialized successfully");
 }
 
 void ui_loop() {
