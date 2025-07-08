@@ -1,18 +1,20 @@
 #include <Arduino.h>
-
-// put function declarations here:
-int myFunction(int, int);
+#include "wifi_comm.h"
+//#include "mqtt_comm.h"
+//#include "display.h"
+//#include "touch.h"
+//#include "ui.h"
 
 void setup() {
-  // put your setup code here, to run once:
-  int result = myFunction(2, 3);
+    Serial.begin(115200);
+    wifi_connect();
+    //mqtt_setup();
+    //display_init();
+    //touch_init();   // Sets up interrupt for touch
+    //ui_init();
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-}
-
-// put function definitions here:
-int myFunction(int x, int y) {
-  return x + y;
+    //mqtt_loop();
+    //ui_loop();    // No touch polling here; handled by interrupt
 }
