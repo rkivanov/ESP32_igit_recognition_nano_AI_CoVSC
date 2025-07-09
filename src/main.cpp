@@ -16,5 +16,15 @@ void setup() {
 
 void loop() {
     mqtt_loop();
+    
+    // Test MQTT publishing every 10 seconds - COMMENTED OUT AFTER SUCCESSFUL TEST
+    // static unsigned long lastPublish = 0;
+    // if (millis() - lastPublish > 10000) {
+    //     String testMessage = "Hello from ESP32 at " + String(millis());
+    //     mqtt_publish_digit((uint8_t*)testMessage.c_str(), testMessage.length());
+    //     Serial.println("Published test message: " + testMessage);
+    //     lastPublish = millis();
+    // }
+    
     //ui_loop();    // No touch polling here; handled by interrupt
 }
