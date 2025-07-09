@@ -7,6 +7,13 @@ void display_init() {
     tft.init();
     tft.setRotation(1);
     tft.fillScreen(TFT_BLACK);
+    
+    // Show initialization message in center of screen
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);
+    tft.setTextSize(1);
+    tft.drawString("Display initialized", 80, 100, 2);
+    tft.drawString("successfully!", 90, 120, 2);
+    
     Serial.println("Display initialized successfully");
 }
 
