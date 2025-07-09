@@ -12,12 +12,37 @@ void mqtt_callback(char* topic, byte* payload, unsigned int length) {
 void mqtt_setup() {
     client.setServer("192.168.1.20", 1883);
     client.setCallback(mqtt_callback);
-    while (!client.connected()) {
-        client.connect("ESP32Client");
+    
+    int attempts = 0;
+    while (!client.connected() && attempts < 10) {
+        Serial.print("Attempting MQTT connection...");
+        if (client.connect("ESP32Client")) {
+            Serial.println("MQTT connected");
+            break;
+        } else {
+            Serial.print("failed, rc=");
+            Serial.print(client.state());
+            Serial.println(" try again in 5 seconds");
+            delay(5000);
+            attempts++;
+        }
+    }
+    
+    if (!client.connected()) {
+        Serial.println("Failed to connect to MQTT broker after 10 attempts");
     }
 }
 
 void mqtt_loop() {
+    if (!client.connected()) {
+        Serial.println("MQTT disconnected, attempting to reconnect...");
+        if (client.connect("ESP32Client")) {
+            Serial.println("MQTT reconnected");
+        } else {
+            Serial.print("MQTT reconnection failed, rc=");
+            Serial.println(client.state());
+        }
+    }
     client.loop();
 }
 
