@@ -1,21 +1,22 @@
 #include <Arduino.h>
 #include "wifi_comm.h"
-#include "mqtt_comm.h"
-#include "display.h"
+//#include "mqtt_comm.h"
+//#include "display.h"
 #include "touch.h"
 //#include "ui.h"
 
 void setup() {
     Serial.begin(115200);
-    wifi_connect();
-    mqtt_setup();
-    display_init();
+    //wifi_connect();
+    //mqtt_setup();
+    //display_init();
     touch_init();   // Sets up interrupt for touch
+    wifi_connect();
     //ui_init();
 }
 
 void loop() {
-    mqtt_loop();
+    //mqtt_loop();
     
     // Test MQTT publishing every 10 seconds - COMMENTED OUT AFTER SUCCESSFUL TEST
     // static unsigned long lastPublish = 0;

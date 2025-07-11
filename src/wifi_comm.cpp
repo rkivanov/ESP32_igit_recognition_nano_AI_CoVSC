@@ -4,7 +4,13 @@
 const char* ssid = "Auto_Platforms";
 const char* password = "qazwsxed";
 
+
 void wifi_connect() {
+    // ✅ Configure WiFi to be interrupt-friendly
+    //WiFi.mode(WIFI_STA);              // Station mode only
+    WiFi.setSleep(false);             // Disable WiFi sleep mode
+    //WiFi.setAutoReconnect(false);     // Disable auto-reconnect
+
     WiFi.begin(ssid, password);
     Serial.println("Connecting to WiFi");
     while (WiFi.status() != WL_CONNECTED) {
