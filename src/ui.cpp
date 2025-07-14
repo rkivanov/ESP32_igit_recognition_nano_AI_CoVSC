@@ -47,48 +47,55 @@ void ui_init() {
 }
 
 void ui_loop() {
-    // Use the correct method from Random Nerd Tutorials
-    if (ts.tirqTouched() && ts.touched()) {
-        TS_Point p = ts.getPoint();
+    // Check for touch interrupt event
+    if (touch_event) {
+        touch_event = false;  // Reset the flag
         
-        // Use the correct coordinate mapping from the working example
-        int x = map(p.x, 200, 3700, 1, 320);
-        int y = map(p.y, 240, 3800, 1, 240);
-        
-        // Debug: Print coordinates
-        Serial.println("Touch: " + String(x) + "," + String(y) + " (raw: " + String(p.x) + "," + String(p.y) + ")");
-        
-        // Check if touch is in drawing area
-        if (x >= DRAW_AREA_X && x <= DRAW_AREA_X + DRAW_AREA_SIZE &&
-            y >= DRAW_AREA_Y && y <= DRAW_AREA_Y + DRAW_AREA_SIZE) {
-            // Draw pixel in drawing area
-            tft.fillCircle(x, y, 2, TFT_WHITE);
-            Serial.println("Drawing at: " + String(x) + "," + String(y));
+        if (ts.touched()) {
+            TS_Point p = ts.getPoint();
+            
+            // Use the correct coordinate mapping from the working example
+            int x = map(p.x, 200, 3700, 1, 320);
+            int y = map(p.y, 240, 3800, 1, 240);
+            
+            // Debug: Print coordinates
+            Serial.println("Touch: " + String(x) + "," + String(y) + " (raw: " + String(p.x) + "," + String(p.y) + ")");
+            
+            // Check if touch is in drawing area
+            if (x >= DRAW_AREA_X && x <= DRAW_AREA_X + DRAW_AREA_SIZE &&
+                y >= DRAW_AREA_Y && y <= DRAW_AREA_Y + DRAW_AREA_SIZE) {
+                // Draw pixel in drawing area
+                tft.fillCircle(x, y, 2, TFT_WHITE);
+                Serial.println("Drawing at: " + String(x) + "," + String(y));
+            }
+            
+            // Check if Clear button pressed
+            else if (x >= CLEAR_BTN_X && x <= CLEAR_BTN_X + CLEAR_BTN_W &&
+                     y >= CLEAR_BTN_Y && y <= CLEAR_BTN_Y + CLEAR_BTN_H) {
+                // Clear drawing area
+                tft.fillRect(DRAW_AREA_X, DRAW_AREA_Y, DRAW_AREA_SIZE, DRAW_AREA_SIZE, TFT_BLACK);
+                Serial.println("Clear button pressed");
+            }
+            
+            // Check if Send button pressed
+            else if (x >= SEND_BTN_X && x <= SEND_BTN_X + SEND_BTN_W &&
+                     y >= SEND_BTN_Y && y <= SEND_BTN_Y + SEND_BTN_H) {
+                // Send drawing data via MQTT
+                String message = "Digit drawing sent at " + String(millis());
+                mqtt_publish_digit((uint8_t*)message.c_str(), message.length());
+                Serial.println("Send button pressed - digit sent via MQTT");
+            }
+            
+            // Debug: Show which area was touched
+            else {
+                Serial.println("Touch outside defined areas");
+            }
+            
+            // Small delay to prevent multiple rapid touches
+            delay(100);
+            
+            // Re-enable interrupt after processing - use ONLOW mode
+            attachInterrupt(36, touch_isr, ONLOW);
         }
-        
-        // Check if Clear button pressed
-        else if (x >= CLEAR_BTN_X && x <= CLEAR_BTN_X + CLEAR_BTN_W &&
-                 y >= CLEAR_BTN_Y && y <= CLEAR_BTN_Y + CLEAR_BTN_H) {
-            // Clear drawing area
-            tft.fillRect(DRAW_AREA_X, DRAW_AREA_Y, DRAW_AREA_SIZE, DRAW_AREA_SIZE, TFT_BLACK);
-            Serial.println("Clear button pressed");
-        }
-        
-        // Check if Send button pressed
-        else if (x >= SEND_BTN_X && x <= SEND_BTN_X + SEND_BTN_W &&
-                 y >= SEND_BTN_Y && y <= SEND_BTN_Y + SEND_BTN_H) {
-            // Send drawing data via MQTT
-            String message = "Digit drawing sent at " + String(millis());
-            mqtt_publish_digit((uint8_t*)message.c_str(), message.length());
-            Serial.println("Send button pressed - digit sent via MQTT");
-        }
-        
-        // Debug: Show which area was touched
-        else {
-            Serial.println("Touch outside defined areas");
-        }
-        
-        // Small delay to prevent multiple rapid touches
-        delay(100);
     }
 }

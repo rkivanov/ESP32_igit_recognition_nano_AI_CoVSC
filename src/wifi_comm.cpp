@@ -5,6 +5,7 @@ const char* ssid = "Auto_Platforms";
 const char* password = "qazwsxed";
 
 void wifi_connect() {
+    WiFi.setSleep(false);             // Disable WiFi sleep mode to prevent interrupt interference
     WiFi.begin(ssid, password);
     Serial.println("Connecting to WiFi");
     while (WiFi.status() != WL_CONNECTED) {

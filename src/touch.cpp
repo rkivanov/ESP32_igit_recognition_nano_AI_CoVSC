@@ -13,7 +13,8 @@ XPT2046_Touchscreen ts(XPT2046_CS, XPT2046_IRQ);
 volatile bool touch_event = false;
 
 void IRAM_ATTR touch_isr() {
-    touch_event = true;
+    touch_event = true; 
+    detachInterrupt(36);  // ✅ Detach immediately to stop re-entering
 }
 
 void touch_init() {
@@ -29,9 +30,17 @@ void touch_init() {
     }
     
     pinMode(XPT2046_IRQ, INPUT_PULLUP);
-    attachInterrupt(digitalPinToInterrupt(XPT2046_IRQ), touch_isr, FALLING);
+    
+    // Wait until touch is released (IRQ pin HIGH) before attaching interrupt
+    while (digitalRead(XPT2046_IRQ) == LOW) {
+        Serial.println("Waiting for touch to be released...");
+        delay(500);
+    }
+    
+    attachInterrupt(XPT2046_IRQ, touch_isr, ONLOW);  // Use ONLOW for continuous touch detection
     Serial.println("Touchscreen initialized successfully");
     
     // Debug: Check IRQ pin state
     Serial.println("Touch IRQ pin state: " + String(digitalRead(XPT2046_IRQ)));
+    Serial.println("Touch interrupt attached to pin " + String(XPT2046_IRQ) + " with ONLOW mode");
 }
